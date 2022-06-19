@@ -1,0 +1,454 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutInspinia.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script language="javascript" type="text/javascript">
+    window.onload = function () {
+        pantalla = document.getElementById("screen");
+    }
+    $(document).ready(function () {
+
+        initClicks();
+
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+
+        firstTimeLiveData();
+        startLiveAction();
+
+        tickLog();
+    });
+
+    function firstTimeLiveData() {
+        ObtieneResumen();
+        CallDetalle(true, '');
+    }
+
+    function startLiveAction() {
+        setInterval('liveData()', 30000);
+    }
+
+    var start = new Date;
+    function liveData() {
+        ObtieneResumen();
+        CallDetalle(true, '');
+
+        var secondLog = (new Date - start) / 1000 + " Seconds";
+        console.log("liveData ok " + secondLog);
+    }
+
+    function tickLog() {
+        setInterval(function () {
+            console.log((new Date - start) / 1000 + " Seconds");
+        }, 1000);
+    }
+
+    function CallDetalle(esAutomatico, color) {
+        var inputValue = $('#searchInput').val();
+
+        ObtieneDetalle(color, inputValue);
+    }
+
+    function ObtieneResumen() {
+
+        var NumAlertasCritico = "";
+        var NumAlertasAlto = "";
+        var NumAlertasBajo = "";
+        var NumAlertasMedio = "";
+        var NumAlertasWarning = "";
+
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("Totales", "Home")',
+            dataType: 'json',
+            data: {},
+                success: function (data) {
+                    var i;
+
+                    for (i = 0; i < data.length; i++) {
+                        if (data[i].Critico != null)
+                            NumAlertasCritico = data[i].Critico;
+
+                        if (data[i].Alto != null)
+                            NumAlertasAlto = data[i].Alto;
+
+                        if (data[i].Medio != null)
+                            NumAlertasMedio = data[i].Medio;
+
+                        if (data[i].Bajo != null)
+                            NumAlertasBajo = data[i].Bajo;
+
+                        if (data[i].Warning != null)
+                            NumAlertasWarning = data[i].Warning;
+                    }
+
+                    console.log("NumAlertasAlto: " + NumAlertasAlto);
+                    console.log("NumAlertasBajo: " + NumAlertasBajo);
+                    console.log("NumAlertasCritico: " + NumAlertasCritico);
+                    console.log("NumAlertasMedio: " + NumAlertasMedio);
+                    console.log("NumAlertasWarning: " + NumAlertasWarning);
+
+                    $("#idNumAlertasCritico").html(NumAlertasCritico);
+                    $("#idNumAlertasBajo").html(NumAlertasBajo);
+                    $("#idNumAlertasCritico").html(NumAlertasCritico);
+                    $("#idNumAlertasMedio").html(NumAlertasMedio);
+                    $("#idNumAlertasWarning").html(NumAlertasWarning);
+                },
+            error: function (ex) {
+
+                $("#idNumAlertasCritico").html(0);
+                $("#idNumAlertasBajo").html(0);
+                $("#idNumAlertasCritico").html(0);
+                $("#idNumAlertasMedio").html(0);
+                $("#idNumAlertasWarning").html(0);
+
+                var r = jQuery.parseJSON(response.responseText);
+                console.log("Message: " + r.Message);
+                console.log("StackTrace: " + r.StackTrace);
+                console.log("ExceptionType: " + r.ExceptionType);
+            }
+        });
+    }
+    function ObtieneDetalle(color, searchText) {
+
+        var countEnsamble = 0;
+        var countPrensa = 0;
+
+          $.ajax({
+            type: 'GET',
+              url: '@Url.Action("Detalle", "Home")?color=' + color + '&searchText=' + searchText,
+            dataType: 'json',
+                data: {},
+                   success: function (data) {
+                       var newHtml = '';
+                       var i;
+
+                       $("#tableRows").empty();
+
+                       for (i = 0; i < data.length; i++) {
+
+                           var Site = "";
+                           var Line = "";
+                           var ProductionLine = "";
+                           var IdEquipo = "";
+                           var NombreEquipo = "";
+
+                           var Description = "";
+                           var PriorityDesc = "";
+                           var DurationString = "";
+                           var Timestamp = "";
+
+                           var Priority = 0;
+                           var colorLabel = "";
+
+                           if (data[i].Site != null)
+                               Site = data[i].Site;
+                           if (data[i].Line != null)
+                               Line = data[i].Line;
+                           if (data[i].ProductionLine != null)
+                               ProductionLine = data[i].ProductionLine;
+                           if (data[i].IdEquipo != null)
+                               IdEquipo = data[i].IdEquipo;
+                           if (data[i].NombreEquipo != null)
+                               NombreEquipo = data[i].NombreEquipo;
+
+
+                           if (data[i].Priority != null) Priority = data[i].Priority;
+                           if (data[i].Description != null) Description = data[i].Description;
+                           if (data[i].PriorityDesc != null) PriorityDesc = data[i].PriorityDesc;
+                           if (data[i].DurationString != null) DurationString = data[i].DurationString;
+                           if (data[i].Timestamp != null) Timestamp = data[i].Timestamp;
+
+                           if (Priority == 1 || Priority == 2) { colorLabel = "red-bg"; }
+                           if (Priority == 3 || Priority == 4) { colorLabel = "orange-bg"; }
+                           if (Priority == 5) { colorLabel = "yellow-bg"; }
+                           if (Priority == 6 || Priority == 7 || Priority ==  8 || Priority == 9) { colorLabel = "blue-bg"; }
+                           if (Priority == 10) { colorLabel = "gray-bg"; }
+
+                           newHtml += '<tr class="gradeA">';
+                           newHtml +=
+                               '<td><span class="label ' + colorLabel + '">' + Site + '</span></td>' +
+                               '<td class="center">' + Line + '</td>' +
+                               '<td class="center">' + ProductionLine + '</td>' +
+                               '<td class="center">' + NombreEquipo + '</td>' +
+                               '<td class="center">' + Description + '</td>' +
+                               '<td class="center">' + PriorityDesc + '</td>' +
+                               '<td class="center">' + DurationString + '</td>' +
+                               '<td><span class="label ' + colorLabel + '">' + Timestamp + '</span></td>';
+                           newHtml += '</tr>';
+
+                           if (Site == "Assembly Operations") {
+                               countEnsamble++;
+                           }
+                           else {
+                               countPrensa++;
+                           }
+
+                       }
+
+                       $('#numberOfPrensas').html(countPrensa);
+                       $('#numberOfEnsambles').html(countEnsamble);
+                       $('#tableRows').html(newHtml);
+
+            },
+            error: function (ex) {
+
+                $("#tableRows").empty();
+
+                var r = jQuery.parseJSON(response.responseText);
+                console.log("Message: " + r.Message);
+                console.log("StackTrace: " + r.StackTrace);
+                console.log("ExceptionType: " + r.ExceptionType);
+            }
+        });
+    }
+
+    function clickColorBox(color) {
+        console.log("clickColorBox: " + color);
+        CallDetalle(false, color);
+    }
+
+    function initClicks() {
+        $(".clickBox").css("cursor", "pointer");
+
+        $('#redBoxButton').click(function () {
+            clickColorBox("red");
+        });
+        $('#orangeBoxButton').click(function () {
+            clickColorBox("orange");
+        });
+        $('#yellowBoxButton').click(function () {
+            clickColorBox("yellow");
+        });
+        $('#grayBoxButton').click(function () {
+            clickColorBox("gray");
+        });
+        $('#blueBoxButton').click(function () {
+            clickColorBox("blue");
+        });
+
+        $('#searchInput').keyup(function () {
+            var inputValue = $('#searchInput').val();
+            console.log(inputValue);
+            CallDetalle(false, '');
+        });
+    }
+
+    function exportTableToExcel(tableID, filename = 'Detalle Mantenimiento Predictivo') {
+
+        var es_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+        if (es_chrome) {
+            var downloadLink;
+            var dataType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+            // Specify file name
+            filename = filename ? filename + '.xls' : 'excel_data.xls';
+
+            // Create download link element
+            downloadLink = document.createElement("a");
+
+            document.body.appendChild(downloadLink);
+
+
+            // Create a link to the file
+            downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+
+            // Setting the file name
+            downloadLink.download = filename;
+
+            //triggering the function
+            downloadLink.click();
+
+        }
+        else
+            var downloadLink;
+        var dataType = 'application/ms-excel';
+        var tableSelect = document.getElementById(tableID);
+        var tableHTML = tableSelect.outerHTML.replace('%20', 'ufeff');
+
+        // Specify file name
+        filename = filename ? filename + '.xls' : 'excel_data.xls';
+
+        // Create download link element
+        downloadLink = document.createElement("a");
+
+        document.body.appendChild(downloadLink);
+
+        if (navigator.msSaveOrOpenBlob) {
+            var blob = new Blob(['', tableHTML], {
+                type: dataType
+            });
+            navigator.msSaveOrOpenBlob(blob, filename);
+        }
+
+
+
+    }
+
+</script>
+
+<script src="~/app-assets/js/core/libraries/jquery.min.js"></script>
+<script language="javascript" type="text/javascript">
+
+</script> 
+<div class="row">
+    <div class="col-lg-4"> </div>
+    <div class="col-lg-4">
+        <h2 class="font-bold" style="text-align:center;">Mantenimiento Predictivo</h2>
+    </div>
+    <div class="col-lg-4"> </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <div class="row">
+                            <div class="col-lg-2">
+
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="widget style1 red-bg clickBox" id="redBoxButton" title="De un click para la búsqueda rápida.">
+                                    <div class="row vertical-align">
+                                        <div class="col-3">
+                                            <i class="fa fa-3x">Crítico </i>
+                                        </div>
+                                        <div class="col-9 text-right">
+                                            <i class="fa fa-3x" id="idNumAlertasCritico">0</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="widget style1 orange-bg clickBox" id="orangeBoxButton" title="De un click para la búsqueda rápida.">
+                                    <div class="row vertical-align">
+                                        <div class="col-3">
+                                            <i class="fa fa-3x">Alto</i>
+                                        </div>
+                                        <div class="col-9 text-right">
+                                            <i class="fa fa-3x" id="idNumAlertasAlto">0</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="widget style1 yellow-bg clickBox" id="yellowBoxButton" title="De un click para la búsqueda rápida.">
+                                    <div class="row vertical-align">
+                                        <div class="col-3">
+                                            <i class="fa fa-3x">Medio</i>
+                                        </div>
+                                        <div class="col-9 text-right">
+                                            <i class="fa fa-3x" id="idNumAlertasMedio">0</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="widget style1 blue-bg clickBox" id="blueBoxButton" title="De un click para la búsqueda rápida.">
+                                    <div class="row vertical-align">
+                                        <div class="col-3">
+                                            <i class="fa fa-3x">Bajo</i>
+                                        </div>
+                                        <div class="col-9 text-right">
+                                            <i class="fa fa-3x" id="idNumAlertasBajo">0</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="widget style1 gray-bg clickBox" id="grayBoxButton" title="De un click para la búsqueda rápida.">
+                                    <div class="row vertical-align">
+                                        <div class="col-3">
+                                            <i class="fa fa-3x">Warning</i>
+                                        </div>
+                                        <div class="col-9 text-right">
+                                            <i class="fa fa-3x" id="idNumAlertasWarning">0</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+
+                            <div class="col-lg-3">
+                                <div class="ibox ">
+                                    <div class="ibox-content">
+                                        <div class="input-group clockpicker" data-autoclose="true">
+                                            <input id="searchInput" type="text" placeholder="Ingrese caracteres para la búsqueda..." class="form-control">
+                                            <span class="input-group-addon">
+                                                <span class="fa fa-search-plus" title="Ingrese caracteres para la búsqueda..."></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <div class="ibox ">
+                                    <div class="ibox-content">
+                                        <div class="stat-percent font-bold text-info font-large-2"><span class="font-bold font-large-1">PRENSAS</span><i class="fa fa-archive"></i></div>
+                                        <span class="font-large-2" id="numberOfPrensas">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="ibox ">
+                                    <div class="ibox-content">
+                                        <div class="stat-percent font-bold text-warning font-large-2"><span class="font-bold font-large-1">ENSAMBLES</span><i class="fa fa-archive"></i></div>
+                                        <span class="font-large-2" id="numberOfEnsambles">0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <div class="ibox ">
+                                    <div class="ibox-content">
+                                        <div class="input-group clockpicker" data-autoclose="true">
+
+                                            <span class="input-group-addon clickBox" onclick="exportTableToExcel('mainTable')">
+                                                <span title="Click para exportar"><span class="font-bold"> Exportar <i class="fa fa-file-excel-o"></i></span></span>
+                                            </span>
+                                            <span class="input-group-addon clickBox">
+                                                <span title="Click para ver histórico"><span class="font-bold"> Historico <i class="fa fa-history"></i> </span></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <table id="mainTable" class="table table-striped table-bordered table-hover dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th>SITE</th>
+                                            <th>FUNCTIONAL</th>
+                                            <th>PRODUCTION LINE</th>
+                                            <th>NOMBRE EQUIPO</th>
+                                            <th>DESCRIPTION</th>
+                                            <th>PRIORITY</th>
+                                            <th>DURATION STRING</th>
+                                            <th>TIMESTAMP</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableRows">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
