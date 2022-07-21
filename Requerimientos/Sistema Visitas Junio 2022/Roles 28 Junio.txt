@@ -1,0 +1,17 @@
+Rol
+	Admin
+	   ** TODO **
+
+	Visitante
+	   ** Agregar Visita
+	   ** Consulta información
+
+	Caseta
+	   ** Consulta información
+	   ** Asignar Gafette
+	   ** Check In / Out
+	   ** Dispositivos
+
+
+josue.flores@magna.com
+Falksei1

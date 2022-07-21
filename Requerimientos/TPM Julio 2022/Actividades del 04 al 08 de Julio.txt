@@ -1,0 +1,22 @@
+- Notificar por correo al capturar checklist
+	- Matriz de aprobadores
+
+- Filtro estatus
+
+- Solo si está en ROJO habilitar "ojo" checklist
+
+- Botón histórico de checklist
+
+- Reset 
+	- Piezas Producidas
+	- Porcentaje
+	- Estatus
+	- Fecha Flujo
+
+- Checklist
+	- Estatus "En Captura"
+		- Permitir guardar previo
+
+- Notificar al rechazar al capturista
+
+- Ver opcion filtrar rechazados

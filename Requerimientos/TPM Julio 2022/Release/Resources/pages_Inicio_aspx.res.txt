@@ -1,0 +1,67 @@
+﻿Titulo=Mantenimiento
+TituloGrid=
+
+Rojo=Rojo
+Amarillo=Amarillo
+Verde=Verde
+
+btnActualizar=Actualizar
+
+gvGeneral-WorkCenter=WorkCenter
+gvGeneral-Descripcion=Descripción
+gvGeneral-Equipo=Equipo
+gvGeneral-Frecuencia=Frecuencia
+gvGeneral-PiezasProducidas=Piezas Producidas 
+gvGeneral-Porcentaje=Porcentaje
+gvGeneral-UltimaEjecucion=Última Ejecución
+
+gvGeneral-EstatusFlujo=Estatus
+gvGeneral-FechaFlujo=Fecha
+lblTooltipActualizar=Actualizar
+lblTooltipCerrar=Cerrar
+lblTooltipGuardar=Guardar
+
+msgAbrirEvidencia=Antes de aprobar o rechazar debe revisar la evidencia.
+msgConfirmarAprobado=Se aprobará, ¿Desea continuar?
+
+TituloModal =Actividades Realizadas
+TituloGeneral=Datos Checklist
+IdChecklist=IdChecklist
+IdChkEquipo=IdChkEquipo
+Checklist=Checklist
+Departamento=Departamento
+Nombre=Nombre
+Clasificacion=Clasificación
+Frecuencia=Frecuencia
+Periodo=Periodo
+Estatus=Estatus
+EstatusAprobacion=Estatus Flujo
+FechaAprobacion=Fecha Flujo
+
+gvGeneral-Item=Item
+gvGeneral-Orden=Orden
+gvGeneral-Sistema=Sistema
+gvGeneral-Componente=Componente del Sistema
+gvGeneral-Actividad=Actividad
+gvGeneral-EquipoParado=Equipo Parado
+gvGeneral-UoM=UoM
+gvGeneral-Resultado=Resultado
+
+Observaciones=Observaciones
+
+
+
+gvHistorico-IdChkEquipo=Id Check List
+gvHistorico-CodWorkCenter=Línea
+gvHistorico-CodEquipo=Código Equipo
+gvHistorico-Estatus=Estatus
+gvHistorico-FechaIniciaFlujo=Inicia Flujo
+gvHistorico-FechaFinalFlujo=Final Flujo
+gvHistorico-DescripChkList=Descripción
+gvHistorico-UserAlta=User Alta
+gvHistorico-FchAlta=Fecha Alta
+gvHistorico-UserModif=User Modif
+gvHistorico-FchEjecucion=Fecha Ejecución
+gvHistorico-UserCancela=User Cancela
+gvHistorico-FchCancel=Fecha Cancela
+gvHistorico-UserActiva=User Activa
